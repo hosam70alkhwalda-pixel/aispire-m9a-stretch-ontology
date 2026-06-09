@@ -1,0 +1,283 @@
+@prefix :        <http://example.org/worldcup#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+
+# ─────────────────────────────────────────────
+#  Ontology metadata
+# ─────────────────────────────────────────────
+
+<http://example.org/worldcup>
+    a owl:Ontology ;
+    dc:title "FIFA World Cup Champions Ontology" ;
+    dc:description "An RDF ontology modelling FIFA World Cup tournaments, champion nations, and continents." ;
+    dc:creator "Hosam" ;
+    owl:versionInfo "1.0" .
+
+# ─────────────────────────────────────────────
+#  Class hierarchy
+# ─────────────────────────────────────────────
+
+:Tournament
+    a rdfs:Class ;
+    skos:prefLabel "Tournament"@en ;
+    skos:altLabel  "World Cup Edition"@en ;       # SKOS disambiguation: same concept, variant label
+    rdfs:comment   "A single edition of the FIFA World Cup." .
+
+:NationalTeam
+    a rdfs:Class ;
+    skos:prefLabel "National Football Team"@en ;
+    skos:altLabel  "International Side"@en ;
+    rdfs:comment   "A country's representative men's football team." .
+
+# subClassOf hierarchy ─────────────────────────
+
+:Continent
+    a rdfs:Class ;
+    skos:prefLabel "Continent"@en ;
+    rdfs:comment   "A continental grouping of national teams." .
+
+:EuropeanNation  rdfs:subClassOf :NationalTeam ;
+    skos:prefLabel "European National Team"@en ;
+    rdfs:comment   "A national team from UEFA / Europe." .
+
+:SouthAmericanNation  rdfs:subClassOf :NationalTeam ;
+    skos:prefLabel "South American National Team"@en ;
+    rdfs:comment   "A national team from CONMEBOL / South America." .
+
+# ─────────────────────────────────────────────
+#  Properties
+# ─────────────────────────────────────────────
+
+:heldInYear
+    a rdf:Property ;
+    rdfs:domain :Tournament ;
+    rdfs:range  xsd:gYear ;
+    rdfs:label  "held in year" .
+
+:hostedBy
+    a rdf:Property ;
+    rdfs:domain :Tournament ;
+    rdfs:range  rdfs:Literal ;
+    rdfs:label  "hosted by" .
+
+:champion
+    a rdf:Property ;
+    rdfs:domain :Tournament ;
+    rdfs:range  :NationalTeam ;
+    rdfs:label  "champion" .
+
+:runnerUp
+    a rdf:Property ;
+    rdfs:domain :Tournament ;
+    rdfs:range  :NationalTeam ;
+    rdfs:label  "runner-up" .
+
+:finalScore
+    a rdf:Property ;
+    rdfs:domain :Tournament ;
+    rdfs:range  rdfs:Literal ;
+    rdfs:label  "final score" .
+
+:confederation
+    a rdf:Property ;
+    rdfs:domain :NationalTeam ;
+    rdfs:range  rdfs:Literal ;
+    rdfs:label  "confederation" .
+
+:titlesWon
+    a rdf:Property ;
+    rdfs:domain :NationalTeam ;
+    rdfs:range  xsd:integer ;
+    rdfs:label  "titles won" .
+
+# OPTIONAL property — only teams that have also hosted a WC carry this
+:hostedEdition
+    a rdf:Property ;
+    rdfs:domain :NationalTeam ;
+    rdfs:range  :Tournament ;
+    rdfs:label  "hosted edition" ;
+    rdfs:comment "Present only for national teams whose country also hosted at least one World Cup." .
+
+# ─────────────────────────────────────────────
+#  National Team instances
+# ─────────────────────────────────────────────
+
+# ── South American teams ──────────────────────
+
+:Brazil
+    a :SouthAmericanNation ;
+    skos:prefLabel "Brazil"@en ;
+    skos:altLabel  "Seleção Brasileira"@pt ;      # SKOS alt: Portuguese official name
+    :confederation "CONMEBOL" ;
+    :titlesWon     5 ;
+    :hostedEdition :WC1950 .                       # OPTIONAL — not all teams have this
+
+:Argentina
+    a :SouthAmericanNation ;
+    skos:prefLabel "Argentina"@en ;
+    skos:altLabel  "La Albiceleste"@es ;
+    :confederation "CONMEBOL" ;
+    :titlesWon     3 ;
+    :hostedEdition :WC1978 .
+
+:Uruguay
+    a :SouthAmericanNation ;
+    skos:prefLabel "Uruguay"@en ;
+    skos:altLabel  "La Celeste"@es ;
+    :confederation "CONMEBOL" ;
+    :titlesWon     2 ;
+    :hostedEdition :WC1930 .
+
+# ── European teams ───────────────────────────
+
+:Germany
+    a :EuropeanNation ;
+    skos:prefLabel "Germany"@en ;
+    skos:altLabel  "Die Mannschaft"@de ;           # SKOS alt: popular nickname
+    :confederation "UEFA" ;
+    :titlesWon     4 ;
+    :hostedEdition :WC1974 .
+
+:Italy
+    a :EuropeanNation ;
+    skos:prefLabel "Italy"@en ;
+    skos:altLabel  "Gli Azzurri"@it ;
+    :confederation "UEFA" ;
+    :titlesWon     4 ;
+    :hostedEdition :WC1934 .
+
+:France
+    a :EuropeanNation ;
+    skos:prefLabel "France"@en ;
+    skos:altLabel  "Les Bleus"@fr ;
+    :confederation "UEFA" ;
+    :titlesWon     2 ;
+    :hostedEdition :WC1938 .                       # France also hosted 1998 (see :WC1998)
+
+:England
+    a :EuropeanNation ;
+    skos:prefLabel "England"@en ;
+    skos:altLabel  "Three Lions"@en ;
+    :confederation "UEFA" ;
+    :titlesWon     1 ;
+    :hostedEdition :WC1966 .
+
+:Spain
+    a :EuropeanNation ;
+    skos:prefLabel "Spain"@en ;
+    skos:altLabel  "La Roja"@es ;
+    :confederation "UEFA" ;
+    :titlesWon     1 .
+    # Spain has NOT hosted a WC as champion, so :hostedEdition is absent → OPTIONAL property
+
+:Netherlands
+    a :EuropeanNation ;
+    skos:prefLabel "Netherlands"@en ;
+    skos:altLabel  "Oranje"@nl ;
+    :confederation "UEFA" ;
+    :titlesWon     0 .
+    # Netherlands never won a title but reached three finals (1974, 1978, 2010)
+
+# ─────────────────────────────────────────────
+#  Tournament instances  (selected key editions)
+# ─────────────────────────────────────────────
+
+:WC1930
+    a :Tournament ;
+    :heldInYear "1930"^^xsd:gYear ;
+    :hostedBy   "Uruguay" ;
+    :champion   :Uruguay ;
+    :runnerUp   :Argentina ;
+    :finalScore "4–2" .
+
+:WC1950
+    a :Tournament ;
+    :heldInYear "1950"^^xsd:gYear ;
+    :hostedBy   "Brazil" ;
+    :champion   :Uruguay ;
+    :runnerUp   :Brazil ;
+    :finalScore "2–1" .
+
+:WC1966
+    a :Tournament ;
+    :heldInYear "1966"^^xsd:gYear ;
+    :hostedBy   "England" ;
+    :champion   :England ;
+    :runnerUp   :Germany ;
+    :finalScore "4–2" .
+
+:WC1970
+    a :Tournament ;
+    :heldInYear "1970"^^xsd:gYear ;
+    :hostedBy   "Mexico" ;
+    :champion   :Brazil ;
+    :runnerUp   :Italy ;
+    :finalScore "4–1" .
+
+:WC1974
+    a :Tournament ;
+    :heldInYear "1974"^^xsd:gYear ;
+    :hostedBy   "West Germany" ;
+    :champion   :Germany ;
+    :runnerUp   :Netherlands ;
+    :finalScore "2–1" .
+
+:WC1978
+    a :Tournament ;
+    :heldInYear "1978"^^xsd:gYear ;
+    :hostedBy   "Argentina" ;
+    :champion   :Argentina ;
+    :runnerUp   :Netherlands ;
+    :finalScore "3–1" .
+
+:WC1994
+    a :Tournament ;
+    :heldInYear "1994"^^xsd:gYear ;
+    :hostedBy   "United States" ;
+    :champion   :Brazil ;
+    :runnerUp   :Italy ;
+    :finalScore "0–0 (3–2 pens)" .
+
+:WC1998
+    a :Tournament ;
+    :heldInYear "1998"^^xsd:gYear ;
+    :hostedBy   "France" ;
+    :champion   :France ;
+    :runnerUp   :Brazil ;
+    :finalScore "3–0" .
+
+:WC2006
+    a :Tournament ;
+    :heldInYear "2006"^^xsd:gYear ;
+    :hostedBy   "Germany" ;
+    :champion   :Italy ;
+    :runnerUp   :France ;
+    :finalScore "1–1 (5–3 pens)" .
+
+:WC2010
+    a :Tournament ;
+    :heldInYear "2010"^^xsd:gYear ;
+    :hostedBy   "South Africa" ;
+    :champion   :Spain ;
+    :runnerUp   :Netherlands ;
+    :finalScore "1–0 (AET)" .
+
+:WC2014
+    a :Tournament ;
+    :heldInYear "2014"^^xsd:gYear ;
+    :hostedBy   "Brazil" ;
+    :champion   :Germany ;
+    :runnerUp   :Argentina ;
+    :finalScore "1–0 (AET)" .
+
+:WC2022
+    a :Tournament ;
+    :heldInYear "2022"^^xsd:gYear ;
+    :hostedBy   "Qatar" ;
+    :champion   :Argentina ;
+    :runnerUp   :France ;
+    :finalScore "3–3 (4–2 pens)" .
